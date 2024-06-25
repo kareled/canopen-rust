@@ -150,7 +150,7 @@ fn should_trigger_pdo(is_sync: bool, event: NodeEvent, transmission_type: u32, e
             // info!("xfguo: transmit_pdo_messages 1.1.2, count = {}, tt = {}", count, transmission_type);
             return false;
         }
-        if event_times == 0 || count % event_times != 0 {
+        if event_times != 0 && count % event_times != 0 {
             // info!("xfguo: transmit_pdo_messages 1.1.3, count = {}, event_timer = {}", count, event_times);
             return false;
         }

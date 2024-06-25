@@ -299,7 +299,7 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
 
     pub fn init(&mut self) -> Result<(), ErrorCode> {
         // TODO(zephyr): this is informal, let's figure out a formal way later or just remove this.
-        let ready_frame = create_frame(0x234, &[1, 2, 3, 5])?;
+        let ready_frame = create_frame(0x700 + self.node_id as u16, &[0])?;
         self.transmit(&ready_frame);
         Ok(())
     }

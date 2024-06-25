@@ -3,6 +3,8 @@ use crate::prelude::*;
 use crate::{error, util};
 use crate::error::ErrorCode;
 
+use hashbrown::HashMap;
+
 #[derive(Clone, Debug)]
 pub struct Value {
     data: Vec<u8>,

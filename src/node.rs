@@ -1,6 +1,7 @@
 use core::ops::Range;
+use core::fmt::Debug;
 
-use embedded_can::{Frame, nb::Can};
+use embedded_hal::can::{Can, Frame};
 
 use crate::{error, info};
 use crate::constant::{ALL_REGISTERS_RANGE, APPLICATION_REGISTERS_RANGE, COB_FUNC_MASK, COB_FUNC_NMT, COB_FUNC_RECEIVE_SDO, COB_FUNC_RPDO_0, COB_FUNC_RPDO_3, COB_FUNC_SYNC, COMMUNICATION_REGISTERS_RANGE};

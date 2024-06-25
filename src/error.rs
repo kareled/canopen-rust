@@ -1,4 +1,6 @@
 use core::fmt::Formatter;
+use core::fmt::Debug;
+use core::fmt::Result;
 use crate::data_type::DataType;
 use crate::prelude::*;
 
@@ -18,7 +20,7 @@ pub enum ErrorCode {
 }
 
 impl Debug for ErrorCode {
-    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+    fn fmt(&self, f: &mut Formatter<'_>) -> Result {
         match self {
             ErrorCode::ByteLengthExceedsLimit => write!(f, "Byte length exceeds limit"),
             ErrorCode::InvalidStandardId { cob_id } => write!(f, "Invalid Standard ID: {}", cob_id),

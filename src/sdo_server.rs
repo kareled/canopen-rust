@@ -1,5 +1,7 @@
-use embedded_can::Frame;
-use embedded_can::nb::Can;
+use core::fmt::Debug;
+
+use embedded_hal::can::Frame;
+use embedded_hal::can::Can;
 
 use crate::cmd_header::{
     SdoBlockDownloadInitiateCmd, SdoBlockUploadCmd, SdoDownloadInitiateCmd, SdoDownloadSegmentCmd,

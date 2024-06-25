@@ -8,6 +8,8 @@ use alloc::borrow::ToOwned;
 use alloc::string::ToString;
 use core::str::FromStr;
 
+use hashbrown::HashMap;
+
 use ini_core as ini;
 
 use crate::{info, util};

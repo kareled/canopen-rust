@@ -12,7 +12,7 @@ keywords = ["can", "canopen"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-embedded-can = "0.4"
+embedded-hal = "0.2.7"
 hashbrown = "0.14"
 ini_core = "0.2"
 bitfield-struct = "0.5"

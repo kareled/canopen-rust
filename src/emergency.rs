@@ -2,8 +2,8 @@ use alloc::vec;
 use alloc::vec::Vec;
 use core::fmt::Debug;
 
-use embedded_can::Frame;
-use embedded_can::nb::Can;
+use embedded_hal::can::Frame;
+use embedded_hal::can::Can;
 
 use crate::constant::{COB_FUNC_SYNC, EMCY_PDO_NOT_PROCESSED, REG_ERROR, REG_PRE_DEFINED_ERROR};
 use crate::error::ErrorCode;

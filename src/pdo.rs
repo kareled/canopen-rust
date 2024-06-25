@@ -3,8 +3,8 @@ use alloc::vec;
 use alloc::vec::Vec;
 use core::fmt::Debug;
 
-use embedded_can::Frame;
-use embedded_can::nb::Can;
+use embedded_hal::can::Frame;
+use embedded_hal::can::Can;
 use hashbrown::HashMap;
 use log::trace;
 

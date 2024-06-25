@@ -1,7 +1,8 @@
 use core::cmp::min;
+use core::fmt::Debug;
 use core::str::FromStr;
 
-use embedded_can::{Frame, Id, StandardId};
+use embedded_hal::can::{Frame, Id, StandardId};
 
 use crate::error::{AbortCode, ErrorCode};
 use crate::error::AbortCode::GeneralError;
@@ -196,7 +197,7 @@ mod util_tests {
     use alloc::vec;
     use alloc::vec::Vec;
     use core::fmt::{Debug, Formatter};
-    use embedded_can::{ExtendedId, Frame, Id, StandardId};
+    use embedded_hal::can::{ExtendedId, Frame, Id, StandardId};
     use super::{create_frame, parse_number, ErrorCode, vec_to_u64, result_to_option, get_cob_id, get_index_from_can_frame, convert_bytes_to_u32};
     use super::u64_to_vec;
 

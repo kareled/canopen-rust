@@ -67,8 +67,8 @@ pub enum NodeEvent {
 /// would compromise our library's current usability in embedded environments.
 pub struct Node<CAN> where CAN: Can, CAN::Frame: Frame + Debug {
     pub(crate) node_id: u8,
-    pub(crate) can_network: CAN,
-    pub(crate) object_directory: ObjectDirectory,
+    pub can_network: CAN,
+    pub object_directory: ObjectDirectory,
     backup_od: ObjectDirectory,
     pub(crate) pdo_objects: PdoObjects,
 
@@ -89,10 +89,10 @@ pub struct Node<CAN> where CAN: Can, CAN::Frame: Frame + Debug {
 
     pub(crate) sync_count: u32,
     pub(crate) event_count: u32,
-    pub(crate) state: NodeState,
+    pub state: NodeState,
     pub(crate) error_count: u8,
     pub(crate) heartbeats: u32,
-    pub(crate) heartbeats_timer: u32,
+    pub heartbeats_timer: u32,
 }
 
 impl<CAN> Node<CAN> where CAN: Can, CAN::Frame: Frame + Debug {

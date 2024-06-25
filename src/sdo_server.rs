@@ -125,7 +125,7 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
     }
 
     fn initiate_upload(&mut self, index: u16, sub_index: u8) -> Result<Option<CAN::Frame>, ErrorCode> {
-        let var = self.object_directory.get_variable(index, sub_index)?;
+        let var = self.object_directory.get_variable(index, sub_index, false)?;
         let data = var.default_value().data();
 
         if data.is_empty() {
@@ -330,7 +330,7 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
         self.block_size = blk_size;
         self.reserved_index = index;
         self.reserved_sub_index = sub_index;
-        let var = self.object_directory.get_variable(index, sub_index)?;
+        let var = self.object_directory.get_variable(index, sub_index, false)?;
         self.read_buf = Some(var.default_value().data().clone());
         self.read_buf_index = 0;
 
@@ -424,7 +424,7 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
         let dest_sub_index = data[1];
 
         // Retrieve variable and validate if it can be mapped to PDO.
-        let var = self.object_directory.get_variable(dest_index, dest_sub_index)?;
+        let var = self.object_directory.get_variable(dest_index, dest_sub_index, false)?;
         if !var.pdo_mappable() || (index < 0x1800 && !var.access_type().is_writable()) {
             return Err(make_abort_error(ObjectCannotBeMappedToPDO, "".to_string()));
         }

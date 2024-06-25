@@ -145,11 +145,11 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
             for j in 0..4 {
                 let idx = i + j;
 
-                if let Ok(var) = self.object_directory.get_variable(idx, 0) {
+                if let Ok(var) = self.object_directory.get_variable(idx, 0, false) {
                     let var_clone = var.clone();
                     let len: u8 = var_clone.default_value().to();
                     for k in 1..=len {
-                        if let Ok(sub_var) = self.object_directory.get_variable(idx, k) {
+                        if let Ok(sub_var) = self.object_directory.get_variable(idx, k, false) {
                             let sub_var_clone = sub_var.clone();
                             self.update(&sub_var_clone)?;
                         }
@@ -161,7 +161,7 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
                 let mut k = 0u8;
 
                 while k <= len {
-                    if let Ok(var) = self.object_directory.get_variable(idx, k) {
+                    if let Ok(var) = self.object_directory.get_variable(idx, k, false) {
                         let var_clone = var.clone();
                         self.update(&var_clone)?;
                         if k == 0 { len = var_clone.default_value().to(); }

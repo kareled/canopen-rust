@@ -186,7 +186,7 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
 
             for (idx, &(i, si, _)) in pdo.mappings.iter().enumerate().take(pdo.num_of_map_objs as usize) {
                 let (data, _) = unpacked_data[idx];
-                self.object_directory.set_value_with_fitting_size(i, si, &data.to_le_bytes());
+                self.object_directory.set_value_with_fitting_size(i, si, &data.to_le_bytes(), true);
             }
 
             pdo.clear_cached_data();
@@ -195,7 +195,7 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
 
     fn validate_pdo_mappings(&mut self, pdo: &PdoObject, index: u16) -> Result<(), ErrorCode> {
         for si in (1..=pdo.num_of_map_objs as usize).rev() {
-            self.object_directory.get_variable(index, si as u8)
+            self.object_directory.get_variable(index, si as u8, false)
                 .map_err(|_| make_abort_error(AbortCode::ObjectCannotBeMappedToPDO, "".to_string()))?;
         }
         Ok(())
@@ -265,7 +265,7 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
                                 -> Result<CAN::Frame, ErrorCode> {
         let mut data_pairs = Vec::new();
         for (idx, sub_idx, bits) in mappings.iter().take(num_of_map_objs as usize) {
-            let variable = self.object_directory.get_variable(*idx, *sub_idx)
+            let variable = self.object_directory.get_variable(*idx, *sub_idx, true)
                 .map_err(|_| ErrorCode::VariableNotFound { index: *idx, sub_index: *sub_idx })?;
 
             let data = vec_to_u64(variable.default_value().data());

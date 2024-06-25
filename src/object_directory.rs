@@ -270,11 +270,11 @@ impl ObjectDirectory {
         }
     }
 
-    pub fn set_value_with_fitting_size(&mut self, index: u16, sub_index: u8, data: &[u8]) {
+    pub fn set_value_with_fitting_size(&mut self, index: u16, sub_index: u8, data: &[u8], ignore_access_check: bool) {
         match self.get_mut_variable(index, sub_index) {
             Err(_) => {}
             Ok(var) => {
-                if !var.access_type.is_writable() {
+                if !ignore_access_check && !var.access_type.is_writable() {
                     return;
                 }
                 if var.data_type.size() > data.len() {
@@ -311,10 +311,10 @@ impl ObjectDirectory {
         }
     }
 
-    pub fn get_variable(&mut self, index: u16, sub_index: u8) -> Result<&Variable, ErrorCode> {
+    pub fn get_variable(&mut self, index: u16, sub_index: u8, ignore_access_check: bool) -> Result<&Variable, ErrorCode> {
         match self.get_mut_variable(index, sub_index) {
             Ok(var) => {
-                if !var.access_type.is_readable() {
+                if !ignore_access_check && !var.access_type.is_readable() {
                     return Err(make_abort_error(AttemptToReadWriteOnlyObject, "".to_string()));
                 }
                 Ok(var)

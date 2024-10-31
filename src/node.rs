@@ -4,7 +4,7 @@ use core::fmt::Debug;
 use embedded_hal::can::{Can, Frame};
 
 use crate::{error, info};
-use crate::constant::{ALL_REGISTERS_RANGE, APPLICATION_REGISTERS_RANGE, COB_FUNC_MASK, COB_FUNC_NMT, COB_FUNC_RECEIVE_SDO, COB_FUNC_RPDO_0, COB_FUNC_RPDO_3, COB_FUNC_SYNC, COMMUNICATION_REGISTERS_RANGE};
+use crate::constant::{ALL_REGISTERS_RANGE, APPLICATION_REGISTERS_RANGE, COB_FUNC_HEARTBEAT, COB_FUNC_MASK, COB_FUNC_NMT, COB_FUNC_RECEIVE_SDO, COB_FUNC_RPDO_0, COB_FUNC_RPDO_3, COB_FUNC_SYNC, COMMUNICATION_REGISTERS_RANGE};
 use crate::emergency::{EmergencyErrorCode, ErrorRegister};
 use crate::error::ErrorCode;
 use crate::object_directory::ObjectDirectory;
@@ -93,11 +93,14 @@ pub struct Node<CAN> where CAN: Can, CAN::Frame: Frame + Debug {
     pub(crate) error_count: u8,
     pub(crate) heartbeats: u32,
     pub heartbeats_timer: u32,
+    pub master_node_id : u8,
+    pub master_heartbeat_count : u32,
 }
 
 impl<CAN> Node<CAN> where CAN: Can, CAN::Frame: Frame + Debug {
     pub fn new(
         node_id: u8,
+        master_node_id : u8,
         eds_content: &str,
         can_network: CAN,
     ) -> Result<Self, ErrorCode> {
@@ -128,6 +131,8 @@ impl<CAN> Node<CAN> where CAN: Can, CAN::Frame: Frame + Debug {
             error_count: 0,
             heartbeats: 0,
             heartbeats_timer: 0,
+            master_node_id,
+            master_heartbeat_count : 0,
         };
         node.update_pdo_params()?;
         Ok(node)
@@ -264,6 +269,23 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
         }
     }
 
+    fn process_heartbeat_frame(&mut self, frame: &CAN::Frame) {
+        if frame.dlc() != 1 {
+            error!("heartbeat frame length should be 1");
+            return;
+        }
+        let status = frame.data()[0];
+        if let Some(cob_id) = get_cob_id(frame) {
+            let node_id = cob_id - COB_FUNC_HEARTBEAT;
+            info!("process_heartbeat_frame: cob_id: {:#x}, node_id: {:#x}, status = {:#x}", cob_id, node_id, status);
+            if node_id == self.master_node_id as u16 {
+                info!("process_heartbeat_frame: inc master_heartbeat_count: {}", self.master_heartbeat_count);
+                self.master_heartbeat_count += 1;
+            }
+        }
+    }
+
+
     fn process_rpdo_frame(&mut self, frame: &CAN::Frame) {
         let result = (|frame: &CAN::Frame| -> Result<(), ErrorCode>{
             let cob_id = get_cob_id(frame).ok_or(ErrorCode::NoCobIdInFrame)?;
@@ -322,6 +344,7 @@ impl<CAN: Can> Node<CAN> where CAN::Frame: Frame + Debug {
                 COB_FUNC_RPDO_0..=COB_FUNC_RPDO_3 => self.process_rpdo_frame(&frame),
                 COB_FUNC_SYNC => self.process_sync_frame(),
                 COB_FUNC_RECEIVE_SDO => self.process_sdo_frame(&frame),
+                COB_FUNC_HEARTBEAT => self.process_heartbeat_frame(&frame),
                 _ => {}
             }
         }

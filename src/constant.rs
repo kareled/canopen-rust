@@ -9,6 +9,7 @@ pub(crate) const COB_FUNC_RPDO_0: u16 = 0x200;
 pub(crate) const COB_FUNC_RPDO_3: u16 = 0x500;
 pub(crate) const COB_FUNC_TRANSMIT_SDO: u16 = 0x580;
 pub(crate) const COB_FUNC_RECEIVE_SDO: u16 = 0x600;
+pub(crate) const COB_FUNC_HEARTBEAT: u16 = 0x700;
 pub(crate) const COB_FUNC_MASK: u16 = 0xFF80;
 
 
